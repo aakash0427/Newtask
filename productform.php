@@ -207,15 +207,6 @@ button{
       </li>
       </ul>
   </div>
-<!-- <div class="pull-right">
-    <ul class="nav pull-right">
-        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome <?php echo $user["username"]; ?></a>
-        <ul class="dropdown-menu">
-            <li><a href="logout.php">Logout</a></li>
-        </ul>
-        </li>
-    </ul>
-</div>  -->
 </nav>
 
 <div class="container">
@@ -240,12 +231,9 @@ button{
         </div>
 
         <label>Product Image:</label>
-        <input type="file" name="photo">
+        <input type="file" name="photo" id="image">
         <br><br>
 
-        <!-- <div class="col-12 form-group">
-            <input type="submit" class="btn" name="submit">
-        </div> -->
         <h6 class="text text-center">OR</h6>
         <br><br>
 

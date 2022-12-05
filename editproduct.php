@@ -1,21 +1,24 @@
 <?php
 require 'database.php';
+$conn = new mysqli("localhost", "root", "", "product");
 
-// if(isset($_GET['edit_id']))
-// {
-//  $sql=mysql_query("SELECT * FROM prolist WHERE id=".$_GET['edit_id']);
-//  $result=mysql_fetch_array($sql);
-// }
-
-// if(isset($_POST['btn-update']))
-// {
-//  $fname = $_POST['first_name'];
-//  $lname = $_POST['last_name'];
-//  $city = $_POST['city_name'];
+if(isset($_POST['submit']))
+{
+ $id=$_GET['id'];
+ $productname = $_POST['productname'];
+ $sku = $_POST['sku'];
+ $price = $_POST['price'];
+ $size = $_POST['size'];
+ $pic = $_FILES['photo']['name'];
+ $folder = "upload/".$pic;
+ move_uploaded_file($_FILES['photo']['tmp_name'],$folder);
  
-//  $id=$_GET['edit_id'];
-//  $res=$con->edit($table,$id,$productname,$sku,$price,$size,$image);
-// }
+ $res= new Database();
+ $res->edit('prolist',['id'=>$id,'productname'=>$productname,'sku'=>$sku,'price'=>$price ,'size'=>$size ,'image'=>$folder]);
+if ($res == true) {
+ header('location:home.php');
+}
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -210,10 +213,11 @@ button{
         <h3>Add Product</h3>
 
         <?php
-        // require 'database.php';
         $id = $_GET['id'];
-        $rows = mysqli_fetch_assoc("SELECT * FROM prolist WHERE id = $id");
+        $rows = mysqli_fetch_assoc(mysqli_query($conn,"SELECT * FROM prolist WHERE id = $id"));
         ?>
+
+
         <input type="hidden" id="id" value="<?php echo $rows['id'];?>">
 
         <label for="productname">Product Name</label>
@@ -234,7 +238,7 @@ button{
         </div>
 
         <label for="image">Product Image:</label>
-        <input type="file" id="image" name="image" value="">
+        <input type="file" name="photo" value="<?php echo $rows['image'];?>">
         <br><br>
 
         <!-- <div class="col-12 form-group">
@@ -244,9 +248,9 @@ button{
         <br><br>
 
         <div Class="input-row">
-		<label>Coose your CSV file</label> 
+		    <label>Coose your CSV file</label> 
         <input type="file" name="file" id="file" name="file" class="file" accept=".csv,.xls,.xlsx">
-	    </div>
+	      </div>
 
         <button type="submit" name="submit">Submit</button>
 

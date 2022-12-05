@@ -1,52 +1,28 @@
 <?php
 require 'database.php';
-$conn = new Database();
+$conn = new mysqli("localhost", "root", "", "product");
+
 $select = new Select();
+$limit = 3;
 
 if(!empty($_SESSION["id"])){
   $user = $select->selectUserById($_SESSION["id"]);
 }
 else{
   header("Location: index.php");
+} 
+
+if (!isset ($_GET['page']) ) {  
+$page_number = 1;  
+
+} else {  
+$page_number = $_GET['page'];  
+
 }
 
-if (isset($_GET['pageno'])) {
-            $pageno = $_GET['pageno'];
-        } else {
-            $pageno = 1;
-        }
-        $no_of_records_per_page = 3;
-        $offset = ($pageno-1) * $no_of_records_per_page;
-
-        // $conn=mysqli_connect("localhost","my_user","my_password","my_db");
-        
-        // if (mysqli_connect_errno()){
-        //     echo "Failed to connect to MySQL: " . mysqli_connect_error();
-        //     die();
-        // }
-
-        $total_pages_sql = "SELECT COUNT(*) FROM prolist";
-        $result = mysqli_query($conn, $total_pages_sql);
-
-        // mysqli_query($this->conn, $total_pages_sql);
-        // return true;
-        $total_rows = mysqli_fetch_array($result)[0];
-        $total_pages = ceil($total_rows / $no_of_records_per_page);
-
-        $sql = "SELECT * FROM prolist LIMIT $offset, $no_of_records_per_page";
-        $res_data = mysqli_query($conn,$sql);
-        while($row = mysqli_fetch_array($res_data)){
-            //here goes the data
-        }
-
-
-// $limit = 3;  
-// if (isset($_GET["page"])) { $page  = $_GET["page"]; } else { $page=1; };  
-// $start_from = ($page-1) * $limit;  
-  
-// $sql = mysqli_query($conn, "SELECT * FROM prolist ORDER BY title ASC LIMIT $start_from, $limit");  
-// $rs_result = mysqli_query($conn, $sql);
-
+//Sorting Asc Desc
+$query = "SELECT * FROM prolist ORDER BY id DESC";  
+$result = mysqli_query($conn, $query);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -55,70 +31,85 @@ if (isset($_GET['pageno'])) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <!-- <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script> -->
     <title>Blogspot</title>
 
     <style>
-        .body{
-            margin:0px;
-            color:white;
-            font-family: Arial;
-        }
+.body{
+  margin:0px;
+  color:white;
+  font-family: Arial;
+}
 
-        .bg-custom-2 {
-            background-image: linear-gradient(15deg, #71C5EE 0%, #025091 100%);
-        }
+.bg-custom-2 {
+  background-image: linear-gradient(15deg, #71C5EE 0%, #025091 100%);
+}
 
-        .header{
-            margin:0px;
-            background:#333;
-            padding: 20px;
+.header{
+  margin:0px;
+  background:#333;
+  padding: 20px;
 
-            display:flex;
-            justify-content:space-between;
-            align-items: center;
-        }
+  display:flex;
+  justify-content:space-between;
+  align-items: center;
+}
 
-        a{
-            color: #f5f2f4;
-            margin:10px;
-            text-decoration: none;
-            font-family: Arial, Helvetica, sans-serif;
-        }
+a{
+  color: #070707;
+  margin:10px;
+  text-decoration: none;
+  font-family: Arial, Helvetica, sans-serif;
+}
 
-        .active{
-            color:#04Ae8f;
-        }
+.active{
+  color:#04Ae8f;
+}
 
-        /* -----------------------DROPDOWN-------------------------- */
-        .nav-item .dropdown {
-          position: relative;
-          display: inline-block;
-        }
+/* -----------------------DROPDOWN-------------------------- */
+.nav-item .dropdown {
+  position: relative;
+  display: inline-block;
+}
 
-        .dropdown-menu {
-          display: none;
-          position: absolute;
-          /* background-color: #f9f9f9; */
-          min-width: 160px;
-          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-          padding: 12px 16px;
-          z-index: 1;
-        }
-       
-        .dropdown:hover .dropdown-menu {
-          display: block;
-        }
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  /* background-color: #f9f9f9; */
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  padding: 12px 16px;
+  z-index: 1;
+}
 
-        button{
-        position:center;
-        margin-top: 50px;
-        margin-bottom: 40px;
-        width:30%;
-        background-color: #2a8ab9;
-        color:#e5e5e5;
-        border-radius: 8px;
-        cursor: pointer;
-        }
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+button{
+position:center;
+margin-top: 50px;
+margin-bottom: 40px;
+width:30%;
+background-color: #2a8ab9;
+color:#e5e5e5;
+border-radius: 8px;
+cursor: pointer;
+}
+
+
+#table-data{
+padding: 15px;
+min-height: 500px;
+}
+#table-data th{
+background:#71C5EE;
+color: #fff;
+}
+#table-data tr:nth-child(odd){
+background: #ecf0f1;
+}
     </style>
 </head>
 <body>
@@ -153,70 +144,64 @@ if (isset($_GET['pageno'])) {
     <ul class="nav pull-right">
         <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome <?php echo $user["username"]; ?></a>
         <ul class="dropdown-menu">
-            <li><a href="/user/preferences">Preferences</a></li>
-            <li><a href="/help/support">Contact Support</a></li>
-            <li class="divider"></li> -->
             <li><a href="logout.php">Logout</a></li>
         </ul>
         </li>
     </ul>
 </div> 
 </nav>
-<!-- <div id="main"> -->
   <div class="container" id="table-data">
-     <table class="table table-striped" style="width:100%">
+     <table class="table table-striped sortable" style="width:100%">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>PRODUCT NAME</th>
-                <th>SKU</th>
-                <th>PRICE</th>
-                <th>SIZE</th>
-                <th>IMAGE</th>
+                <th><a class="column_sort" id="id" data-order="desc" href="#">ID</a></th>
+                <th><a class="column_sort" id="productname" data-order="desc" href="#">PRODUCT NAME</th>
+                <th><a class="column_sort" id="sku" data-order="desc" href="#">SKU</a></th>
+                <th><a class="column_sort" id="price" data-order="desc" href="#">PRICE</a></th>
+                <th><a class="column_sort" id="size" data-order="desc" href="#">SIZE</a></th>
+                <th><a class="column_sort" id="image" data-order="desc" href="#">IMAGE</a></th>
                 <th>ACTION</th>
             </tr>
         </thead>
         <tbody>
-              <?php
-  $sql=$select->fetchdata();
-  $cnt=1;
-  while($row=mysqli_fetch_array($sql))
-  {
-  ?>
-                <tr>
-                <td><?php echo $cnt;?></td>
-                <td><?php echo $row["productname"]; ?></td>
-                <td><?php echo $row["sku"]; ?></td>
-                <td><?php echo $row["price"]; ?></td>
-                <td><?php echo $row["size"]; ?></td>
-                <td><img src="<?php echo $row['image']; ?>" height="100" width="100"></td>
-                <td>
-                  <button type="button">
-                <a href="editproduct.php?id=<?php echo $row['id']; ?>">Edit</a></button>
-                <button type="button" onclick="submitData(<?php echo $row['id']; ?>);">Delete</button>
-                </td>
-                </tr>
-        </tbody>
-        <?php $cnt=$cnt+1;}
 
-        ?>
-    </table>
-    <?php 
-// $sql=mysqli_query($conn, "SELECT COUNT(id) FROM prolist");  
-// $rs_result = mysqli_query($conn, $sql);  
-// $row = mysqli_fetch_row($result);  
-// $total_records = $row[0]; 
-// $total_pages = ceil($total_records / $limit);  
-// $pagLink = "<ul class='pagination'>";
+<?php
+$getQuery = "SELECT * FROM prolist";  
+$result = mysqli_query($conn, $getQuery);  
+$total_rows = mysqli_num_rows($result);
+$total_pages = ceil ($total_rows / $limit);
+$initial_page = ($page_number-1) * $limit;   
+$getQuery = "SELECT *FROM prolist LIMIT " . $initial_page . ',' . $limit; 
+   
 
-//  for ($i=1; $i<=$total_pages; $i++) 
-//  $paglink.= "<li><a href='home.php?page=".$i."'>".$i."</a><li>";
-// echo $pagLink . ""; ?>
+$result = mysqli_query($conn, $getQuery);
+while ($row = mysqli_fetch_array($result)) {  
+?>
+
+<tr>
+<td><?php echo $row['id'];?></td>
+<td><?php echo $row["productname"]; ?></td>
+<td><?php echo $row["sku"]; ?></td>
+<td><?php echo $row["price"]; ?></td>
+<td><?php echo $row["size"]; ?></td>
+<td><img src="<?php echo $row['image']; ?>" height="100" width="100"></td>
+<td>
+  <button type="button">
+<a href="editproduct.php?id=<?php echo $row['id']; ?>">Edit</a></button>
+<button type="button" onclick="submitData(<?php echo $row['id']; ?>);">Delete</button>
+</td>
+</tr>
+  <?php
+  }    
+?>
+  </tbody>
+  
+</table>
 
     <!-- <div class="container" id="pagination">
   <hr/>
   <ul class="pagination pagination-lg">
-    <li class="page-item"><a class="page-link" href="#" aria-label="Previous">&laquo;</a></li>
+    <li class="page-item"><a class="page-link" href="home.php?page=">&laquo;</a></li>
     <li class="page-item active"><a  href="#">2</a></li>
     <li class="page-item"><a id="1" href="#">3</a></li>
     <li class="page-item"><a id="2" href="#">4</a></li>
@@ -232,43 +217,42 @@ if (isset($_GET['pageno'])) {
 
   </div> -->
 
-   <!-- <div id="table-data"></div>
-  </div> -->
-<ul class="pagination">
-        <li><a href="?pageno=1">First</a></li>
-        <li class="<?php if($pageno <= 1){ echo 'disabled'; } ?>">
-            <a href="<?php if($pageno <= 1){ echo '#'; } else { echo "?pageno=".($pageno - 1); } ?>">Prev</a>
-        </li>
-        <li class="<?php if($pageno >= $total_pages){ echo 'disabled'; } ?>">
-            <a href="<?php if($pageno >= $total_pages){ echo '#'; } else { echo "?pageno=".($pageno + 1); } ?>">Next</a>
-        </li>
-        <li><a href="?pageno=<?php echo $total_pages; ?>">Last</a></li>
-    </ul>
+<?php 
+  for($page_number = 1; $page_number<= $total_pages; $page_number++) {  
+
+  echo '<a href = "home.php?page=' . $page_number . '">' . $page_number . ' </a>';  
+}
+?>
 <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script> 
-<!-- <script type="text/javascript">
-$(document).ready(function(){
-  function loadTable(page){
-    $.ajax({
-      url: "ajax-pagination.php",
-      type: "POST",
-      data: {page_no :page},
-      success : function(data){
-        $("#table_data").html(data);
-      }
-    });
-  }
-  loadTable();
-
-  $(document).on("click","#pagination a",function(e){
-    e.preventDefault();
-    var page_id = $(this).attr("id"); 
-
-    loadTable(page_id);
-  })
-
-});
-
-</script> -->
+<script>  
+ $(document).ready(function(){  
+      $(document).on('click', '.column_sort', function(){  
+           var column_name = $(this).attr("id");  
+           var order = $(this).data("order");  
+           var arrow = '';  
+          //  glyphicon glyphicon-arrow-up  
+          //  glyphicon glyphicon-arrow-down  
+           if(order == 'desc')  
+           {  
+                arrow = '&nbsp;<span class="glyphicon glyphicon-arrow-down"></span>';  
+           }  
+           else  
+           {  
+                arrow = '&nbsp;<span class="glyphicon glyphicon-arrow-up"></span>';  
+           }  
+           $.ajax({  
+                url:"sort.php",  
+                method:"POST",  
+                data:{column_name:column_name, order:order},  
+                success:function(data)  
+                {  
+                     $('#table-data').html(data);  
+                     $('#'+column_name+'').append(arrow);  
+                }  
+           })  
+      });  
+ });  
+ </script>
 </body>
 </html>

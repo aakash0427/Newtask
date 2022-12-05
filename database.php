@@ -2,24 +2,28 @@
 session_start();
 
 class Database{
+  public $db_host = "localhost";
+  public $db_user = "root";
+  public $db_pass = "";
+  public $db_name = "product";
+  public $conn;
 
-    public $db_host = "localhost";
-    public $db_user = "root";
-    public $db_pass = "";
-    public $db_name = "product";
-    public $conn;
+  public function __construct(){
+  $this->conn = mysqli_connect($this->db_host,$this->db_user,$this->db_pass,$this->db_name);
+  }
 
-    public function __construct(){
-        $this->conn = mysqli_connect($this->db_host,$this->db_user,$this->db_pass,$this->db_name);
-    }
+  public function insert($table,$para=array()){
+  $table_columns = implode(',', array_keys($para));
+  $table_value = implode("','", $para);
 
-    public function insert($table,$para=array()){
-    $table_columns = implode(',', array_keys($para));
-    $table_value = implode("','", $para);
+  $sql="INSERT INTO $table($table_columns) VALUES('$table_value')";
+  $result = $this->conn->query($sql);
+  }
 
-    $sql="INSERT INTO $table($table_columns) VALUES('$table_value')";
-
-    $result = $this->conn->query($sql);
+  public function edit($table,$id,$productname,$sku,$price, $size, $folder)
+  {
+  $res = mysql_query("UPDATE $table SET productname='$productname', sku='$sku', price='$price', size='$size', image='$folder' WHERE user_id=".$id);
+  return $res;
   }
 
   
@@ -103,11 +107,7 @@ class InsertProduct extends Database{
 }
 
 class UpdateProduct extends Database{
-  public function edit($table,$id,$productname,$sku,$price, $size, $pic)
-  {
-  $res = mysql_query("UPDATE $table SET productname='$productname', sku='$sku', price='$price', size='$size', image='$image' WHERE user_id=".$id);
-  return $res;
- }
+  
 }
 
 
