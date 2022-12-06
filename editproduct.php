@@ -14,7 +14,8 @@ if(isset($_POST['submit']))
  move_uploaded_file($_FILES['photo']['tmp_name'],$folder);
  
  $res= new Database();
- $res->edit('prolist',['id'=>$id,'productname'=>$productname,'sku'=>$sku,'price'=>$price ,'size'=>$size ,'image'=>$folder]);
+//  $res=$conn->edit('prolist',['id'=>$id,'productname'=>$productname,'sku'=>$sku,'price'=>$price ,'size'=>$size ,'image'=>$folder]);
+ $res->edit('prolist',$id,$productname,$sku,$price, $size, $folder);
 if ($res == true) {
  header('location:home.php');
 }
@@ -238,7 +239,7 @@ button{
         </div>
 
         <label for="image">Product Image:</label>
-        <input type="file" name="photo" value="<?php echo $rows['image'];?>">
+        <input type="file" name="photo" id="image" value="<?php echo $rows['image'];?>">
         <br><br>
 
         <!-- <div class="col-12 form-group">

@@ -1,10 +1,9 @@
 <?php
 require 'database.php';
 $conn = new mysqli("localhost", "root", "", "product");
-
-$select = new Select();
 $limit = 3;
 
+$select = new Select();
 if(!empty($_SESSION["id"])){
   $user = $select->selectUserById($_SESSION["id"]);
 }
@@ -20,9 +19,11 @@ $page_number = $_GET['page'];
 
 }
 
+
 //Sorting Asc Desc
-$query = "SELECT * FROM prolist ORDER BY id DESC";  
-$result = mysqli_query($conn, $query);
+// $query = "SELECT * FROM prolist ORDER BY id DESC";  
+// $result = mysqli_query($conn, $query);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -89,15 +90,20 @@ a{
 
 button{
 position:center;
-margin-top: 50px;
-margin-bottom: 40px;
-width:30%;
+margin-top:20px;
+margin-bottom: 20px;
+width:35%;
 background-color: #2a8ab9;
 color:#e5e5e5;
-border-radius: 8px;
+border-radius: 10px;
 cursor: pointer;
 }
 
+.table td, .table th {
+padding: 0.75rem;
+vertical-align: middle;
+border-top: 1px solid #dee2e6;
+}
 
 #table-data{
 padding: 15px;
@@ -186,9 +192,10 @@ while ($row = mysqli_fetch_array($result)) {
 <td><?php echo $row["size"]; ?></td>
 <td><img src="<?php echo $row['image']; ?>" height="100" width="100"></td>
 <td>
-  <button type="button">
-<a href="editproduct.php?id=<?php echo $row['id']; ?>">Edit</a></button>
-<button type="button" onclick="submitData(<?php echo $row['id']; ?>);">Delete</button>
+<button type="button">
+  <a href="editproduct.php?id=<?php echo $row['id']; ?>">Edit</a></button>
+<button type="button">
+  <a href="deletedata.php?id=<?php echo $row['id']; ?>">Delete</a></button>
 </td>
 </tr>
   <?php
@@ -212,10 +219,10 @@ while ($row = mysqli_fetch_array($result)) {
     <li class="page-item"><a id="7" href="#">9</a></li>
     <li class="page-item"><a  aria-label="Next">&raquo;</a></li>
   </ul>
-</div>
+</div>--->
 
 
-  </div> -->
+ </div>
 
 <?php 
   for($page_number = 1; $page_number<= $total_pages; $page_number++) {  
@@ -242,7 +249,7 @@ while ($row = mysqli_fetch_array($result)) {
                 arrow = '&nbsp;<span class="glyphicon glyphicon-arrow-up"></span>';  
            }  
            $.ajax({  
-                url:"sort.php",  
+                url:"sortdata.php",  
                 method:"POST",  
                 data:{column_name:column_name, order:order},  
                 success:function(data)  

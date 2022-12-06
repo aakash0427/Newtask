@@ -15,18 +15,15 @@ class Database{
   public function insert($table,$para=array()){
   $table_columns = implode(',', array_keys($para));
   $table_value = implode("','", $para);
-
   $sql="INSERT INTO $table($table_columns) VALUES('$table_value')";
   $result = $this->conn->query($sql);
   }
 
   public function edit($table,$id,$productname,$sku,$price, $size, $folder)
   {
-  $res = mysql_query("UPDATE $table SET productname='$productname', sku='$sku', price='$price', size='$size', image='$folder' WHERE user_id=".$id);
+  $res = mysqli_query($this->conn,"UPDATE $table SET id='$id', productname='$productname', sku='$sku', price='$price', size='$size', image='$folder' WHERE id=".$id);
   return $res;
   }
-
-  
  
 }
 
@@ -93,25 +90,5 @@ class Select extends Database{
  }
 
 }
-
-
-class InsertProduct extends Database{
-//   public function insert($productname, $sku, $price, $size, $image, $file){
-//   $inset = mysqli_query($this->conn,"INSERT INTO prolist(productname,sku,price,size,image,file) VALUES ('$productname', '$sku', '$price', '$size', '$folder', '$file' )");
-//   if($inset == true){
-//     header("Location: home.php");
-//    }
-// } 
-
-
-}
-
-class UpdateProduct extends Database{
-  
-}
-
-
-
-
 
 ?>
