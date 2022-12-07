@@ -210,8 +210,8 @@ button{
 </nav>
 
 <div class="container">
-    <form action="" method="post" enctype="multipart/form-data" autocomplete="off">
-        <h3>Add Product</h3>
+    <form action="" id="myTable" method="post" enctype="multipart/form-data" autocomplete="off">
+        <h3>Edit Product</h3>
 
         <?php
         $id = $_GET['id'];

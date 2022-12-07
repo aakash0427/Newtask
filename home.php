@@ -90,7 +90,7 @@ a{
 
 button{
 position:center;
-margin-top:20px;
+margin-top:0px;
 margin-bottom: 20px;
 width:35%;
 background-color: #2a8ab9;
@@ -138,7 +138,7 @@ background: #ecf0f1;
           Dropdown
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="csvform.php">IMPORT CSV</a>
           <a class="dropdown-item" href="#">Another action</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="#">Something else here</a>
@@ -249,7 +249,7 @@ while ($row = mysqli_fetch_array($result)) {
                 arrow = '&nbsp;<span class="glyphicon glyphicon-arrow-up"></span>';  
            }  
            $.ajax({  
-                url:"sortdata.php",  
+                url:"sort.php",  
                 method:"POST",  
                 data:{column_name:column_name, order:order},  
                 success:function(data)  

@@ -9,9 +9,14 @@ if(isset($_POST['submit'])){
     $size=$_POST['size'];
     $pic = $_FILES['photo']['name']; 
     $folder = "upload/".$pic;
-    
     move_uploaded_file($_FILES['photo']['tmp_name'],$folder);
 
+    $fileName = $_FILES["file"]["tmp_name"];
+    if($_FILES["file"]["size"] > 0){
+      $file = fopen($fileName, "r");
+
+
+    }
 
     $res= new Database();
     $res->insert('prolist',['productname'=>$productname,'sku'=>$sku,'price'=>$price ,'size'=>$size ,'image'=>$folder]);
@@ -210,7 +215,7 @@ button{
 </nav>
 
 <div class="container">
-    <form action="" method="post" enctype="multipart/form-data" autocomplete="off">
+    <form action="" method="post" id="myTable" enctype="multipart/form-data" autocomplete="off">
         <h3>Add Product</h3>
 
         <label for="productname">Product Name</label>
