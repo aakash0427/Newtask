@@ -1,7 +1,7 @@
 <?php
 require 'database.php';
 $conn = new mysqli("localhost", "root", "", "product");
-$limit = 3;
+
 
 $select = new Select();
 if(!empty($_SESSION["id"])){
@@ -10,7 +10,7 @@ if(!empty($_SESSION["id"])){
 else{
   header("Location: index.php");
 } 
-
+$limit = 3;
 if (!isset ($_GET['page']) ) {  
 $page_number = 1;  
 
@@ -249,7 +249,7 @@ while ($row = mysqli_fetch_array($result)) {
                 arrow = '&nbsp;<span class="glyphicon glyphicon-arrow-up"></span>';  
            }  
            $.ajax({  
-                url:"sort.php",  
+                url:"sortdata.php",  
                 method:"POST",  
                 data:{column_name:column_name, order:order},  
                 success:function(data)  

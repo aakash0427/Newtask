@@ -85,8 +85,8 @@ class Select extends Database{
 
   public function fetchdata()
  {
- $result=mysqli_query($this->conn,"SELECT * FROM prolist");
- return $result;
+   $result=mysqli_query($this->conn,"SELECT * FROM prolist");
+   return $result;
  }
 
 }

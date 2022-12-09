@@ -2,6 +2,7 @@
  //sort.php  
  $conn = mysqli_connect("localhost", "root", "", "product");
  
+ 
  $column_name = $_POST['column_name'];
  $order = $_POST['order'];
  
@@ -13,6 +14,16 @@
  {  
     $order = 'desc'; 
  }
+
+
+if (!isset ($_GET['page']) ) {  
+$limit = 3;
+$page_number = 1;  
+
+} else {  
+$page_number = $_GET['page'];  
+
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,20 +39,26 @@
 
   
       <tr>  
-           <th><a class="column_sort" id="id" data-order="'.$order.'" href="#">ID</a></th>  
-           <th><a class="column_sort" id="productname" data-order="'.$order.'" href="#">PRODUCT NAME</a></th>  
-           <th><a class="column_sort" id="sku" data-order="'.$order.'" href="#">SKU</a></th> 
-           <th><a class="column_sort" id="size" data-order="'.$order.'" href="#">SIZE</a></th> 
-           <th><a class="column_sort" id="price" data-order="'.$order.'" href="#">PRICE</a></th>    
-           <th><a class="column_sort" id="image" data-order="'.$order.'" href="#">IMAGE</a></th>
+           <th><a class="column_sort" id="id" data-order="<?php echo $order; ?>" href="#">ID</a></th>  
+           <th><a class="column_sort" id="productname" data-order="<?php echo $order; ?>" href="#">PRODUCT NAME</a></th>  
+           <th><a class="column_sort" id="sku" data-order="<?php echo $order; ?>" href="#">SKU</a></th> 
+           <th><a class="column_sort" id="size" data-order="<?php echo $order; ?>" href="#">SIZE</a></th> 
+           <th><a class="column_sort" id="price" data-order="<?php echo $order; ?>" href="#">PRICE</a></th>    
+           <th><a class="column_sort" id="image" data-order="<?php echo $order; ?>" href="#">IMAGE</a></th>
            <th>ACTION</th>
       </tr>
       <?php
-     $sql = "SELECT * FROM prolist ORDER BY ".$_POST["column_name"]." ".$_POST["order"]." "; 
     
+     $sql = "SELECT * FROM prolist ORDER BY ".$_POST['column_name']." ".$_POST['order']." "; 
      $result = mysqli_query($conn ,$sql);
-      
-      while($row = mysqli_fetch_array($result))  
+
+
+     $total_rows = mysqli_num_rows($result);
+     $total_pages = ceil ($total_rows / $limit);
+     $initial_page = ($page_number-1) * $limit;
+
+     $getQuery = "SELECT * FROM prolist LIMIT $initial_page , $limit";
+       while($row = mysqli_fetch_array($result))  
       { 
      ?>
       <tr>  
@@ -60,6 +77,11 @@
       </tr>  
       <?php
 }
+      
+// for($page_number = 1; $page_number<= $total_pages; $page_number++) {  
+
+//   echo '<a href = "home.php?page=' . $page_number . '">' . $page_number . ' </a>';  
+// }
  ?> 
 </table>
 </div>

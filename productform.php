@@ -20,10 +20,10 @@ if(isset($_POST['submit'])){
 
     $res= new Database();
     $res->insert('prolist',['productname'=>$productname,'sku'=>$sku,'price'=>$price ,'size'=>$size ,'image'=>$folder]);
-        
-        if ($res == true) {
-            header('location:home.php');
-        }
+    
+    if ($res == true) {
+      header('location:home.php');
+    }
 }
 
 // if(isset($_POST["submit"])){
